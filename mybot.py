@@ -211,6 +211,12 @@ def get_game_stats(message, year, week, team):
 	game = nflgame.one(year,week=week,home=team.upper(),away=team.upper())
 	
 	# TODO: build actual validation for the year, week, team and improve the error reporting
+	if len(year) <> 4:
+		message.reply("NFL has been around for only the past 50ish years. Might want to try a 4 digit year")
+		return
+	if week > 25:
+		message.reply("As much as I'd like, there aren't that many weeks in the NFL season")
+		return
 	if game is None:
 		message.reply("Yeah...I didn't find that game. Try again?")
 		return
