@@ -32,7 +32,7 @@ Lombardi supports several queries "out of the box", but is very easily customiza
 
 Lombardi generally follows the conventions of nflgame and slackbot. This means that a few definitions apply across the board:
 * 'Season' and 'Year' are effectively interchangeable - e.g., the 2015-2016 NFL season is referred to by the year 2015. So, if you want results from January 2013 you would reference the year 2012 for that season
-* Unless otherwise indicated, player names should be provided in full name format. E.g., you should use "Ben Roethlisberger" instead of "B. Roethlisberger" or something else. There is currently an [issue open](#issuelink) to add more graceful error handling around invalid name entry, and more flexibilty for name entry overall.
+* Unless otherwise indicated, player names should be provided in full name format. E.g., you should use "Ben Roethlisberger" instead of "B. Roethlisberger" or something else. TODO: add more graceful error handling around invalid name entry, and more flexibilty for name entry overall.
 * Unless otherwise indicated, queries are case-insensitive
 
 The following queries are currently supported:
@@ -48,13 +48,10 @@ Example:
 
 Example:
 `player stats for Ben Roethlisberger in 2015`
-`asdfasdf`
+`Forthcoming`
 
 `player stats for Ben Roethlisberger in 2015 detailed`
-`asdf
-asdf
-asdf
-fads`
+`Forthcoming`
 
 ### Bio [player name]
 - Returns player biographical information, including team, position, team, college, height/weight, years pro, and a link to the player's profile on NFL.com
