@@ -244,6 +244,4 @@ def get_game_stats(message, year, week, team):
 	# add scoring summary to the response
 	response += '\nScoring Summary:\n%s' % scoring_summary
 
-	message.reply(response
-
-	
+	message.reply(response)
