@@ -2,3 +2,4 @@ requests==2.10.0
 nflgame==1.2.19
 slackbot==0.4.1
 feedparser==5.2.1
+Flask==0.11.1
