@@ -49,7 +49,7 @@ def help(message):
 #@respond_to('top$', re.IGNORECASE)
 @respond_to('top (.*) (.*)', re.IGNORECASE)
 def top(message, pos_abbreviation, year): # in this definition, message is the object, and position and year are passed to the function!
-	
+
 	# convert year into an int
 	year = int(year)
 
@@ -68,7 +68,7 @@ def top(message, pos_abbreviation, year): # in this definition, message is the o
 	# calculate the game stats using nflgame
 	games = nflgame.games(year)
 	players = nflgame.combine_game_stats(games)
-	
+
 	# intiialize response variable
 	response = 'Here are the stats for the top 5 %s in %s:\n' % (pos_abbreviation, year)
 
@@ -127,7 +127,7 @@ def playerstats(message, player, year, details='no'):
 		# 	# WR stats
 		# if bigben.position == 'K':
 		# 	# K stats
-		
+
 		# right now this is QB stats (hence the passing nomenclature)
 		for i, game in enumerate(games):
 		    if game.players.name(bigben.gsis_name):
@@ -178,7 +178,7 @@ def espnheadlines(message):
 			link = d['items'][x]['links'][0]['href']
 
 			response += '*%s*:\n%s\n' % (title, link)
-		
+
 		except:
 			"Uhhh having trouble connecting. Try again in a bit."
 
@@ -206,10 +206,10 @@ def redditheadlines(message):
 def get_game_stats(message, year, week, team):
 	year = int(year)
 	week = int(week)
-	
+
 	# nflgame requrires team abbreviations are uppercase
 	game = nflgame.one(year,week=week,home=team.upper(),away=team.upper())
-	
+
 	# TODO: build actual validation for the year, week, team and improve the error reporting
 	if game is None:
 		message.reply("Yeah...I didn't find that game. Try again?")
@@ -222,7 +222,7 @@ def get_game_stats(message, year, week, team):
 
 	# initialize the response
 	response = 'Stats for %s\n(in week %d of the %d season):\n' % (game, week, year)
-	
+
 	# TODO: refactor the crap out of this when my eyes aren't closing against my will:
 	stats_list = [
 	'First Downs:',

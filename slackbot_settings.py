@@ -11,4 +11,4 @@ PLUGINS = [
 	'mybot'
 ]
 
-ERRORS_TO = 'bot_errors'
+ERRORS_TO = 'lombardi_errors'
