@@ -24,13 +24,14 @@ def help(message):
 	# TODO: either use the built-in slackbot argument finder, or export this into a separate function for refactor
 	response = 'Hi! I can respond to the following commands:\n'
 	response += '* `top [position] [year]`\n'
-	response += '* `player stats [full name] [year] [\'detailed\' (optional)]`\n'
+	response += '* `simple player stats [full name] [year]`\n'
+	response += '* `detailed player stats [full name] [year]`\n'
 	response += '* `Game stats [year] [week] [team]`\n\n'
 	response += '* `bio [full name]`\n'
 	response += '* `Reddit headlines`\n'
 	response += '* `ESPN headlines`\n'
 	response += 'I\'m always learning new things! If there\'s something you\'d like to see either '
-	response += 'ask my creator or check out my documentation and add it yourself!\n'
+	response += 'ask my creator or check out my documentation on GitHub (https://github.com/blattus/lombardi) and add it yourself!\n'
 	response += ''
 
 	message.reply(response)

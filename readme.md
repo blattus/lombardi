@@ -43,13 +43,13 @@ The following queries are currently supported:
 Example:
 `Top RB 2015`
 
-### (forthcoming) Player Stats for [player name] in [year] [optional: 'detailed']
-- Returns aggregate stats for a given player in a given season. Relevant stats are shown based on the player's position. If 'detailed' is included, week-by-week stats are shown.
+### [Simple / Detailed] Player Stats [player name] [year]
+- Returns aggregate stats for a given player in a given season. Relevant stats are shown based on the player's position. Adding 'simple' or 'detailed' to the beginning of the query is required and specifies the level of stat detail that will be returned.
 
 Example:
-`player stats for Ben Roethlisberger in 2015`
+`simple player stats Randall Cobb 2014`
 
-`player stats for Ben Roethlisberger in 2015 detailed`
+`detailed player stats Ben Roethlisberger 2015`
 
 ### Bio [player name]
 - Returns player biographical information, including team, position, team, college, height/weight, years pro, and a link to the player's profile on NFL.com
@@ -84,7 +84,14 @@ Example:
 
 Slackbot handles the connection to Slack's servers using the provided API token, and includes support for reconnection after a connectivity loss, so theoretically this could be run on any internet-connected computer assuming all of the dependencies are installed.
 
-I'm working on getting this running on Heroku...instructions for that will go here soon.
+Lombardi can be run pretty easily on Heroku. The attached procfile will automatically execute `run.py` as a worker task. Note that when deploying to Heroku it's important to ensure you have at least one worker dyno running (you don't need any web dynos). Heroku's Python [deployment tutorial](https://devcenter.heroku.com/articles/getting-started-with-python#introduction) is a great resource to get acquainted. Assuming all of the dependencies are installed, initial deployment should look something like this:
+- `heroku create`
+- `heroku config:set SLACKBOT_API_TOKEN=<your-slackbot-api-token>`
+- `git push heroku master`
+- `heroku ps:scale web=0`
+- `heroku ps:scale worker=1`
+
+Then, updates to the app can be deployed simply by running `git push heroku master` and allowing the app to restart.
 
 ## Future development / TODO
 

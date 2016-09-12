@@ -13,7 +13,7 @@ Commits to this repository are welcome (and encouraged!)
 * `git remote add upstream https://github.com/blattus/lombardi.git`
 * `git checkout -b my_awesome_branch`
 * build something cool (or squash a bug)
-* `git add . && git commit -am "descrptive commit message describing what the change does"`
+* `git add . && git commit -am "descriptive commit message describing what the change does"`
 * `git merge upstream master`
 * (work through any change issues, if applicable)
 * submit a pull request
