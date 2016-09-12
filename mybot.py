@@ -95,12 +95,10 @@ def top(message, pos_abbreviation, year): # in this definition, message is the o
 
 	message.reply(response)
 
-# stats for a given player in a given season
-#@respond_to('player stats $', re.IGNORECASE)
-@respond_to('player stats (.*\s.*) (.*)', re.IGNORECASE)
-# @respond_to('player stats (.*\s.*) (.*) (.*)', re.IGNORECASE)
-# @respond_to('player stats (?:.*) (.*\s.*) (?:.*) (.*) (.*)', re.IGNORECASE)
-def playerstats(message, player, year, details='no'):
+# simple stats for a given player in a given season
+@respond_to('simple player stats (.*\s.*) (.*)', re.IGNORECASE)
+@respond_to('simplified player stats (.*\s.*) (.*)', re.IGNORECASE)
+def simpleplayerstats(message, player, year):
 	year = int(year)
 	response = 'Here are the stats for %s in %s:\n' % (player, year)
 
@@ -108,52 +106,108 @@ def playerstats(message, player, year, details='no'):
 	games = nflgame.games(year)
 	players = nflgame.combine(games)
 
-	if details == 'detailed':
-		# this works to calculate games but specifying the team is MUCH faster:
-		# #games = nflgame.games(year, home="PIT", away="PIT")
-		#games = nflgame.games(year)
-		bigben = nflgame.find(player)[0]
-		# bigben -> Ben Roethlisberger (QB, PIT)
-		# bigben.gsis_name -> B.Roethlisberger
-		# bigben.position -> QB
-		# bigben.team -> PIT
+	# find the specific player from the combined game data:
+	try:
+		result = nflgame.find(player)[0]
+	except IndexError:
+		message.reply('Could not find that player. Maybe check the spelling and try again?')
 
-		# #TODO: complete this if logic for position-based stats
-		# if bigben.position == 'QB':
-		# 	# QB stats
-		# if bigben.position == 'RB':
-		# 	# RB stats
-		# if bigben.position == 'WR':
-		# 	# WR stats
-		# if bigben.position == 'K':
-		# 	# K stats
+	# for whole-season data we can just get the player from the combined game data versus iterating through each game
+	myplayer = players.name(result.gsis_name)
 
-		# right now this is QB stats (hence the passing nomenclature)
-		for i, game in enumerate(games):
-		    if game.players.name(bigben.gsis_name):
-		        stats = game.players.name(bigben.gsis_name).passing_yds
-		        tds = game.players.name(bigben.gsis_name).passing_tds
-		        response += '*Week {:2}* - {:3} yds, {:2} TD\n'.format(game.schedule['week'], stats, tds)
+	# For some players there is no gsis_name....probably a way to work around this but for now throw an error
+	if myplayer is None:
+		message.reply('Something strange happened. I may not have data for that player')
 
-		response += '-'*25
-		#players = nflgame.combine(games)
-		response += '\n*{:4} Season - {:4} yds, {:2} TD*'.format(year, players.name(bigben.gsis_name).passing_yds, players.name(bigben.gsis_name).passing_tds)
-
-	# if detailed stats are not requested, provide overall stats for the season
-	else:
-		#games = nflgame.games(year)
-		#players = nflgame.combine(games)
-		my_player = nflgame.find(player)[0]
-		brady = players.name(my_player.gsis_name)
-		response += '%d total yds, %d total TD in %d' % (brady.passing_yds, brady.passing_tds, year)
-
-		# ne = nflgame.games(2010, home="NE", away="NE")
-		# players = nflgame.combine(ne)
-		# brady = players.name("T.Brady")
-		# response += '%d, %d' % (brady.passing_tds, brady.passing_yds)
+	if myplayer.player.position == 'QB':
+		response += '%d total passing yds, %d total passing TD in %d' % (myplayer.passing_yds, myplayer.passing_tds, year)
+	if myplayer.player.position in ('WR','TE'):
+		response += '%d total receiving yds, %d total receiving TD in %d' % (myplayer.receiving_yds, myplayer.receiving_tds, year)
+	if myplayer.player.position == 'RB':
+		response += '%d total rushing yds, %d total rushing TD in %d' % (myplayer.rushing_yds, myplayer.rushing_tds, year)
 
 	message.reply(response)
 
+# detailed stats for a given player in a given season
+@respond_to('detailed player stats (.*\s.*) (.*)', re.IGNORECASE)
+def detailedplayerstats(message, player, year):
+	year = int(year)
+	response = 'Here are the stats for %s in %s:\n' % (player, year)
+
+	# calculate games and players variables
+	games = nflgame.games(year)
+	players = nflgame.combine(games)
+
+	# find the specific player from the combined game data:
+	try:
+		result = nflgame.find(player)[0]
+	except IndexError:
+		message.reply('Could not find that player. Maybe check the spelling and try again?')
+
+	# this works to calculate games but specifying the team is MUCH faster:
+	# #games = nflgame.games(year, home="PIT", away="PIT")
+	#games = nflgame.games(year)
+
+	# initialize
+	total_yds = 0
+	total_tds = 0
+
+	# iterate through all games in the season (calculated above)
+	for game in games:
+		# for each game in the season, we only want data for the player being queried:
+		myplayer = game.players.name(result.gsis_name)
+
+		if game.players.name(result.gsis_name):
+	        # could test by using if 'passing_yds' in myplayer.__dict__, but this seems more straightforward for now?
+			try:
+				passing_yds = myplayer.passing_yds
+			except NameError:
+			    passing_yds = '0'
+			try:
+			    passing_tds = myplayer.passing_tds
+			except NameError:
+			    passing_tds = '0'
+			try:
+			    receiving_yds = myplayer.receiving_yds
+			except NameError:
+			    receiving_yds = '0'
+			try:
+			    receiving_tds = myplayer.receiving_tds
+			except NameError:
+			    receiving_tds = '0'
+			try:
+			    rushing_yds = myplayer.rushing_yds
+			except NameError:
+			    rushing_yds = '0'
+			try:
+			    rushing_tds = myplayer.rushing_tds
+			except NameError:
+			    rushing_tds = '0'
+
+			if myplayer.player.position == 'QB':
+			    response += '*Week {:2}* - {:3} passing yds, {:2} passing TD\n'.format(game.schedule['week'], passing_yds, passing_tds)
+			    total_yds += passing_yds
+			    total_tds += passing_tds
+			if myplayer.player.position == 'WR':
+			    response += '*Week {:2}* - {:3} receiving yds, {:2} receiving TD\n'.format(game.schedule['week'], receiving_yds, receiving_tds)
+			    total_yds += receiving_yds
+			    total_tds += receiving_tds
+			if myplayer.player.position == 'RB':
+			    response += '*Week {:2}* - {:3} rushing yds, {:2} rushing TD\n'.format(game.schedule['week'], rushing_yds, rushing_tds)
+			    total_yds += rushing_yds
+			    total_tds += rushing_tds
+			if myplayer.player.position == 'TE':
+			    response += '*Week {:2}* - {:3} receiving yds, {:2} receiving TD\n'.format(game.schedule['week'], receiving_yds, receiving_tds)
+			    total_yds += receiving_yds
+			    total_tds += receiving_tds
+
+	# hyphens for separation
+	response += '-'*30
+
+	# Season summary
+	response += '\n*{:4} Season - {:4} yds, {:2} TD*'.format(year, total_yds, total_tds)
+
+	message.reply(response)
 
 #@respond_to('bio $', re.IGNORECASE)
 @respond_to('bio (.*)', re.IGNORECASE)
