@@ -30,6 +30,7 @@ def help(message):
 	response += '* `bio [full name]`\n'
 	response += '* `Reddit headlines`\n'
 	response += '* `ESPN headlines`\n'
+	response += '* `team headlines [team abbreviation]`\n'
 	response += 'I\'m always learning new things! If there\'s something you\'d like to see either '
 	response += 'ask my creator or check out my documentation on GitHub (https://github.com/blattus/lombardi) and add it yourself!\n'
 	response += ''
@@ -256,6 +257,33 @@ def redditheadlines(message):
 			"Uhhh having trouble connecting. Try again in a bit."
 
 	message.send(response)
+
+@respond_to('Team Headlines (.*)', re.IGNORECASE)
+def team_headlines(message, team):
+	# NFL provides team-specific RSS feeds with simple URI handling
+	# From http://www.nfl.com/rss/rsslanding
+	query_url = 'http://www.nfl.com/rss/rsslanding?searchString=team&abbr={}'.format(team.upper())
+
+	d = feedparser.parse(query_url)
+
+	# Handle invalid teams by checking the result page for a team-specific description
+	if d['feed']['subtitle'] == 'No Description':
+		message.reply('Invalid team! Make sure you\'re using a valid 3-letter NFL Team abbreviation.')
+
+	else:
+		response = d['feed']['subtitle']+':\n'
+
+		for x in range(0,5):
+		    try:
+		        title = d['items'][x]['title']
+		        link = d['items'][x]['links'][0]['href']
+
+		        response += '*%s*:\n%s\n' % (title, link)
+
+		    except:
+		        "Uhhh having trouble connecting. Try again in a bit."
+
+		message.reply(response)
 
 @respond_to('game stats (.*) (.*) (.*)', re.IGNORECASE)
 def get_game_stats(message, year, week, team):
