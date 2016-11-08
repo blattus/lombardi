@@ -63,8 +63,8 @@ def top(message, pos_abbreviation, year): # in this definition, message is the o
 
 	# same story if the year is invalid
 	# TODO: make year range auto calculated based on current time
-	if year not in range(2009,2016):
-		message.reply('You didn\'t give me a valid year! I only have data from 2009 - 2015')
+	if year not in range(2009,2017):
+		message.reply('You didn\'t give me a valid year! I only have data from 2009 - 2016')
 		return
 
 	# calculate the game stats using nflgame
