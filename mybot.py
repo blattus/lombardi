@@ -1,7 +1,7 @@
 from slackbot.bot import respond_to
 from slackbot.bot import listen_to
 import re
-import nflgame
+#import nflgame
 import feedparser
 
 @respond_to('hi', re.IGNORECASE)
@@ -23,14 +23,15 @@ def chief(message):
 def help(message):
 	# TODO: either use the built-in slackbot argument finder, or export this into a separate function for refactor
 	response = 'Hi! I can respond to the following commands:\n'
-	response += '* `top [position] [year]`\n'
-	response += '* `simple player stats [full name] [year]`\n'
-	response += '* `detailed player stats [full name] [year]`\n'
-	response += '* `Game stats [year] [week] [team]`\n\n'
-	response += '* `bio [full name]`\n'
+	#response += '* `top [position] [year]`\n'
+	#response += '* `simple player stats [full name] [year]`\n'
+	#response += '* `detailed player stats [full name] [year]`\n'
+	#response += '* `Game stats [year] [week] [team]`\n\n'
+	#response += '* `bio [full name]`\n'
 	response += '* `Reddit headlines`\n'
 	response += '* `ESPN headlines`\n'
 	response += '* `team headlines [team abbreviation]`\n'
+	response += 'scoreboard (provides the current week\'s fantasy scoreboard'
 	response += 'I\'m always learning new things! If there\'s something you\'d like to see either '
 	response += 'ask my creator or check out my documentation on GitHub (https://github.com/blattus/lombardi) and add it yourself!\n'
 	response += ''
@@ -328,3 +329,4 @@ def get_game_stats(message, year, week, team):
 	response += '\nScoring Summary:\n%s' % scoring_summary
 
 	message.reply(response)
+
