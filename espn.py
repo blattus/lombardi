@@ -11,7 +11,6 @@ def initial_setup():
     year = 2017
 
     # credentials to let us see a private league
-    
     # read in private league settings from config.py
     espn_s2 = config.espn_s2
     swid = config.swid
@@ -29,13 +28,13 @@ def initial_setup():
     global teams
     global settings
     global power_rankings
-    global userTable
+    global user_table
 
     scoreboard = league.scoreboard()
     teams = league.teams
     settings = league.settings
     power_rankings = league.power_rankings
-    userTable = {}
+    user_table = {}
 
 def team_records():
     response = ''
@@ -72,9 +71,9 @@ def format_scoreboard():
 
     return(response)
 
-def identify_user(slackUserId):
-    if slackUserId in userTable:
-        return userTable[slackUserId]
+def identify_user(slack_user_id):
+    if slack_user_id in user_table:
+        return user_table[slack_user_id]
     else:
         return 'cannot find that user'
 
