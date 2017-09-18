@@ -12,10 +12,11 @@ def initial_setup():
 
     # credentials to let us see a private league
     
-    # obtain league from espn
+    # read in private league settings from config.py
     espn_s2 = config.espn_s2
     swid = config.swid
 
+    # get league info from ESPN
     league = League(league_id,year,espn_s2,swid)
 
     #store the league locally for easy testing later
@@ -28,11 +29,13 @@ def initial_setup():
     global teams
     global settings
     global power_rankings
+    global userTable
 
     scoreboard = league.scoreboard()
     teams = league.teams
     settings = league.settings
     power_rankings = league.power_rankings
+    userTable = {}
 
 def team_records():
     response = ''
@@ -69,8 +72,77 @@ def format_scoreboard():
 
     return(response)
 
+def identify_user(slackUserId):
+    if slackUserId in userTable:
+        return userTable[slackUserId]
+    else:
+        return 'cannot find that user'
+
+@respond_to('github', re.IGNORECASE)
+def github(message):
+
+    attachments = [
+        {
+            "fallback": "Required plain-text summary of the attachment.",
+            "color": "#36a64f",
+            "pretext": "Optional text that appears above the attachment block",
+            "author_name": "Bobby Tables",
+            "author_link": "http://flickr.com/bobby/",
+            "author_icon": "http://flickr.com/icons/bobby.jpg",
+            "title": "Slack API Documentation",
+            "title_link": "https://api.slack.com/",
+            "text": "Optional text that appears within the attachment",
+            "fields": [
+                {
+                    "title": "Priority",
+                    "value": "High",
+                },
+                {
+                    "title2": "another",
+                    "value": "meh",
+                }
+            ],
+            "image_url": "http://my-website.com/path/to/image.jpg",
+            "thumb_url": "https://platform.slack-edge.com/img/default_application_icon.png",
+            "footer": "Slack API",
+            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+            "ts": 123456789
+        },
+        {
+            "fallback": "Required plain-text summary of the attachment.",
+            "color": "#36a64f",
+            "pretext": "Optional text that appears above the attachment block",
+            "author_name": "Bobby Tables",
+            "author_link": "http://flickr.com/bobby/",
+            "author_icon": "http://flickr.com/icons/bobby.jpg",
+            "title": "Slack API Documentation",
+            "title_link": "https://api.slack.com/",
+            "text": "Optional text that appears within the attachment",
+            "fields": [
+                {
+                    "title": "Priority",
+                    "value": "High",
+                },
+                {
+                    "title2": "another",
+                    "value": "meh",
+                }
+            ],
+            "image_url": "http://my-website.com/path/to/image.jpg",
+            "thumb_url": "http://example.com/path/to/thumb.png",
+            "footer": "Slack API",
+            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+            "ts": 123456789
+        }
+    ]
+    message.send_webapi('', json.dumps(attachments))
+
+
 @respond_to('schedule', re.IGNORECASE)
 def get_schedule(message):
+    print(dir(message))
+    print(message._get_user_id())
+    print(message.body)
     initial_setup()
     
     response = team_schedule('Amogh K')
