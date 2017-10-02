@@ -12,7 +12,8 @@ except:
 
 PLUGINS = [
 	'mybot',
-	'espn'
+	'espn',
+	'nflstats'
 ]
 
 ERRORS_TO = 'lombardi_errors'

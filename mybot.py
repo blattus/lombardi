@@ -14,11 +14,6 @@ def hi(message):
 	# TODO: add some personalization - the message object contains data on who the sender is. I think this will work:
 	# sender = "@" + message.channel._client.users[message.body['user']][u'name']
 
-@listen_to('Can I get some stats in here?')
-def chief(message):
-    # Message is replied to the sender (prefixed with @user)
-    message.reply('Tell me what you want, chief')
-
 @respond_to('help', re.IGNORECASE)
 def help(message):
 	# TODO: either use the built-in slackbot argument finder, or export this into a separate function for refactor
@@ -51,7 +46,7 @@ def help(message):
 
 # stats for top players at a given position in a given season
 #@respond_to('top$', re.IGNORECASE)
-@respond_to('top (.*) (.*)', re.IGNORECASE)
+#@respond_to('top (.*) (.*)', re.IGNORECASE)
 def top(message, pos_abbreviation, year): # in this definition, message is the object, and position and year are passed to the function!
 
 	# convert year into an int
@@ -100,8 +95,8 @@ def top(message, pos_abbreviation, year): # in this definition, message is the o
 	message.reply(response)
 
 # simple stats for a given player in a given season
-@respond_to('simple player stats (.*\s.*) (.*)', re.IGNORECASE)
-@respond_to('simplified player stats (.*\s.*) (.*)', re.IGNORECASE)
+#@respond_to('simple player stats (.*\s.*) (.*)', re.IGNORECASE)
+#@respond_to('simplified player stats (.*\s.*) (.*)', re.IGNORECASE)
 def simpleplayerstats(message, player, year):
 	year = int(year)
 	response = 'Here are the stats for %s in %s:\n' % (player, year)
@@ -133,7 +128,7 @@ def simpleplayerstats(message, player, year):
 	message.reply(response)
 
 # detailed stats for a given player in a given season
-@respond_to('detailed player stats (.*\s.*) (.*)', re.IGNORECASE)
+#@respond_to('detailed player stats (.*\s.*) (.*)', re.IGNORECASE)
 def detailedplayerstats(message, player, year):
 	year = int(year)
 	response = 'Here are the stats for %s in %s:\n' % (player, year)
@@ -214,7 +209,7 @@ def detailedplayerstats(message, player, year):
 	message.reply(response)
 
 #@respond_to('bio $', re.IGNORECASE)
-@respond_to('bio (.*)', re.IGNORECASE)
+#@respond_to('bio (.*)', re.IGNORECASE)
 def playerbio(message, player):
 	response = 'Here\'s the bio for %s:\n' % player
 	bigben = nflgame.find(player)[0]
@@ -287,7 +282,7 @@ def team_headlines(message, team):
 
 		message.reply(response)
 
-@respond_to('game stats (.*) (.*) (.*)', re.IGNORECASE)
+#@respond_to('game stats (.*) (.*) (.*)', re.IGNORECASE)
 def get_game_stats(message, year, week, team):
 	year = int(year)
 	week = int(week)

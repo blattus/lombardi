@@ -23,13 +23,11 @@ def initial_setup():
     global teams
     global settings
     global power_rankings
-    global user_table
 
     scoreboard = league.scoreboard()
     teams = league.teams
     settings = league.settings
     power_rankings = league.power_rankings
-    user_table = {}
 
 def team_records():
     response = ''
@@ -76,12 +74,6 @@ def format_scoreboard():
 
     return(response)
 
-def identify_user(slack_user_id):
-    if slack_user_id in user_table:
-        return user_table[slack_user_id]
-    else:
-        return 'cannot find that user'
-
 @respond_to('schedule (.*)', re.IGNORECASE)
 def get_schedule(message, team_owner):
     
@@ -103,6 +95,7 @@ def get_scoreboard(message):
     message.reply(response)
 
 @respond_to('records', re.IGNORECASE)
+@respond_to('rankings', re.IGNORECASE)
 def get_records(message):
     initial_setup()
     response = team_records()
