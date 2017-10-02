@@ -4,9 +4,8 @@ import re
 from espnff import League
 import json
 import config
-
+   
 def initial_setup():
-    
     # read in private league settings from config.py
     league_id = config.league_id
     year = config.year
@@ -74,7 +73,7 @@ def format_scoreboard():
 
     return(response)
 
-@respond_to('schedule (.*)', re.IGNORECASE)
+@respond_to('fantasy schedule (.*)', re.IGNORECASE)
 def get_schedule(message, team_owner):
     
     print('Team Owner: {}'.format(team_owner))
@@ -87,15 +86,15 @@ def get_schedule(message, team_owner):
     
     message.reply(response)
 
-@respond_to('scoreboard', re.IGNORECASE)
+@respond_to('fantasy scoreboard', re.IGNORECASE)
 def get_scoreboard(message):
     initial_setup()
     response = format_scoreboard()
 
     message.reply(response)
 
-@respond_to('records', re.IGNORECASE)
-@respond_to('rankings', re.IGNORECASE)
+@respond_to('fantasy records', re.IGNORECASE)
+@respond_to('fantasy rankings', re.IGNORECASE)
 def get_records(message):
     initial_setup()
     response = team_records()
