@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Lombardi is a rudimentary Slack bot that provides current and prior-season NFL statistics in response to structured natural language queries. The bot is built in Python using [Slackbot](https://github.com/lins05/slackbot) and leverages data from the [nflgame](https://github.com/BurntSushi/nflgame) API in addition to other sources.
+Lombardi is a rudimentary Slack bot that provides current and prior-season NFL statistics in response to structured natural language queries. The bot is built in Python using [Slackbot](https://github.com/lins05/slackbot) and leverages data from [stattleship]](http://www.stattleship.com) in addition to other sources.
 
 Currently, Lombardi will respond to [supported queries](#supported-queries) as long as he is added to a channel and invoked using @lombardi. Lombardi will also respond to queries sent to him via direct message.
 
@@ -10,20 +10,27 @@ This project is very much in the alpha stage. Much refactoring and optimization 
 
 ## Requirements
 
-- Python 2.6 or 2.7 (may work in Python 3 but at your own risk)
-- nflgame
+- Python 3.0
+- espnff (for ESPN fantasy football data)
 - slackbot
 - feedparser (for ESPN news headlines)
 
-## Installation
+## Setup / Installation
 
 - Create a Slack bot and obtain its API token
 - Clone this repository
 - `pip install -r requirements.txt`
-- Provide your API token to the application by either:
+- Setup configurations in a `config.py` file within the lombardi directory, with format `var = '{your token here}'`:
+	- Slack API Token: `apitoken`
+	- ESPN S2: `espn_s2`
+	- ESPN SWID: `swid`
+	- ESPN League ID: `league_id`
+	- ESPN League Year: `year`
+	- Stattleship API Token: `stattleship_token`
+- For Slackbot, there are a few additional ways to provide the Slack API token:
     - Creating an environment variable: `export SLACKBOT_API_TOKEN='<your token here>'` from a shell prompt
     - Adding `API_TOKEN = '<your token here>'` to the top of slackbot_settings.py
-    - Creating a config.py file in the lombardi directory with apitoken = '<your token here>'
+    - Add to `config.py` as described above.
 - `python run.py`
 
 ## Supported Queries
@@ -37,36 +44,6 @@ Lombardi generally follows the conventions of nflgame and slackbot. This means t
 
 The following queries are currently supported:
 
-### Top [position] [year]
-- Returns statistics for the top 5 players of the provided position in the provided season
-
-Example:
-`Top RB 2015`
-
-### [Simple / Detailed] Player Stats [player name] [year]
-- Returns aggregate stats for a given player in a given season. Relevant stats are shown based on the player's position. Adding 'simple' or 'detailed' to the beginning of the query is required and specifies the level of stat detail that will be returned.
-
-Example:
-`simple player stats Randall Cobb 2014`
-
-`detailed player stats Ben Roethlisberger 2015`
-
-### Bio [player name]
-- Returns player biographical information, including team, position, team, college, height/weight, years pro, and a link to the player's profile on NFL.com
-- Player name must be provided as a full name, e.g., "Tom Brady" or "Antonio Gates"
-
-Example:
-`bio Antonio Gates`
-
-### Game stats [year] [week] [team]
-- Returns a detailed game summary for the specified game. The summary includes:
-- Aggregate game statistics (score, first downs, yardages, penalty / turnover stats, punt stats, and TOP)
-- A scoring summary
-- Team name must be provided in abbreviated format (e.g., "CAR" or "JAC")
-
-Example:
-`game stats 2015 1 CAR`
-
 ### NFL Headlines
 - Returns the top 5 headlines from ESPN NFL
 
@@ -78,6 +55,38 @@ Example:
 
 Example:
 `Reddit headlines`
+
+### NFL Scoreboard
+- Returns the current NFL scoreboard
+
+Example:
+`NFL scoreboard`
+`NFL scores`
+
+### Season Stats {3-character NFL team ID}
+- Returns season stats for the specified team
+
+Example:
+`season stats CAR`
+
+### Fantasy Schedule {owner name}
+- Returns the fantasy schedule for the specified team owner
+
+Example:
+`fantasy schedule roshan`
+
+### Fantasy Scoreboard
+- Returns the current fantasy scoreboard
+
+Example:
+`fantasy scoreboard`
+
+### Fantasy Records
+- Returns the ESPN fantasy power rankings
+
+Example:
+`fantasy records`
+`fantasy rankings`
 
 
 ## Deployment
