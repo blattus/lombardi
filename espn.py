@@ -4,6 +4,7 @@ import re
 from espnff import League
 import json
 import config
+from statistics import mean
    
 def initial_setup():
     # read in private league settings from config.py
@@ -73,6 +74,13 @@ def format_scoreboard():
 
     return(response)
 
+def margin_of_victory():
+    response = 'Average margins of victory:\n'
+    for team in teams:
+        response += '{}: {}\n'.format(team.team_name,format(mean(team.mov), '.2f'))
+
+    return response
+
 @respond_to('fantasy schedule (.*)', re.IGNORECASE)
 def get_schedule(message, team_owner):
     
@@ -100,6 +108,12 @@ def get_records(message):
     response = team_records()
     message.reply(response)
 
+@respond_to('margin of victory', re.IGNORECASE)
+@respond_to('mov', re.IGNORECASE)
+def get_margin_of_victory(message):
+    initial_setup()
+    response = margin_of_victory()
+    message.reply(response)
 
 # # load the content from the pickle
 # f = open('datastore.pckl', 'rb')
