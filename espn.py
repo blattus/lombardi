@@ -2,26 +2,21 @@ from slackbot.bot import respond_to
 from slackbot.bot import listen_to
 import re
 from espnff import League
-import pickle
 import json
 import config
 
 def initial_setup():
-    league_id = 580419
-    year = 2017
+    
+    # read in private league settings from config.py
+    league_id = config.league_id
+    year = config.year
 
     # credentials to let us see a private league
-    # read in private league settings from config.py
     espn_s2 = config.espn_s2
     swid = config.swid
 
     # get league info from ESPN
     league = League(league_id,year,espn_s2,swid)
-
-    #store the league locally for easy testing later
-    f = open('datastore.pckl', 'wb')
-    pickle.dump(league, f)
-    f.close()
 
     # define some variables for convenience
     global scoreboard
@@ -47,12 +42,22 @@ def team_records():
 def team_schedule(inputOwner):
     response = ''
 
+    print('Input Owner: '+inputOwner)
+
     for team in teams:
-        if(team.owner == inputOwner):
+        # the inputOwner is guaranteed to be lowercase, so we can compare against a lower() version of the ESPN data
+        if(team.owner.split(' ')[0].lower() == inputOwner):
             chosenTeam = team
 
+    # if we have an error creating chosenTeam then we couldn't find a match above
+    try:
+        response += 'Schedule for {}\n'.format(chosenTeam.team_name)
+    except UnboundLocalError:
+        return('Can\'t find that owner! Make sure you\'re using a first name.')
+    
     for index,competitor in enumerate(chosenTeam.schedule):
         week = index + 1
+        # TODO: add won / loss / tie status of each game
         response += 'Week {}: vs {} ({}-{})\n'.format(week,competitor.team_name,competitor.wins,competitor.losses)
 
     return(response)
@@ -77,74 +82,16 @@ def identify_user(slack_user_id):
     else:
         return 'cannot find that user'
 
-@respond_to('github', re.IGNORECASE)
-def github(message):
-
-    attachments = [
-        {
-            "fallback": "Required plain-text summary of the attachment.",
-            "color": "#36a64f",
-            "pretext": "Optional text that appears above the attachment block",
-            "author_name": "Bobby Tables",
-            "author_link": "http://flickr.com/bobby/",
-            "author_icon": "http://flickr.com/icons/bobby.jpg",
-            "title": "Slack API Documentation",
-            "title_link": "https://api.slack.com/",
-            "text": "Optional text that appears within the attachment",
-            "fields": [
-                {
-                    "title": "Priority",
-                    "value": "High",
-                },
-                {
-                    "title2": "another",
-                    "value": "meh",
-                }
-            ],
-            "image_url": "http://my-website.com/path/to/image.jpg",
-            "thumb_url": "https://platform.slack-edge.com/img/default_application_icon.png",
-            "footer": "Slack API",
-            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-            "ts": 123456789
-        },
-        {
-            "fallback": "Required plain-text summary of the attachment.",
-            "color": "#36a64f",
-            "pretext": "Optional text that appears above the attachment block",
-            "author_name": "Bobby Tables",
-            "author_link": "http://flickr.com/bobby/",
-            "author_icon": "http://flickr.com/icons/bobby.jpg",
-            "title": "Slack API Documentation",
-            "title_link": "https://api.slack.com/",
-            "text": "Optional text that appears within the attachment",
-            "fields": [
-                {
-                    "title": "Priority",
-                    "value": "High",
-                },
-                {
-                    "title2": "another",
-                    "value": "meh",
-                }
-            ],
-            "image_url": "http://my-website.com/path/to/image.jpg",
-            "thumb_url": "http://example.com/path/to/thumb.png",
-            "footer": "Slack API",
-            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-            "ts": 123456789
-        }
-    ]
-    message.send_webapi('', json.dumps(attachments))
-
-
-@respond_to('schedule', re.IGNORECASE)
-def get_schedule(message):
-    print(dir(message))
+@respond_to('schedule (.*)', re.IGNORECASE)
+def get_schedule(message, team_owner):
+    
+    print('Team Owner: {}'.format(team_owner))
     print(message._get_user_id())
     print(message.body)
+    
     initial_setup()
     
-    response = team_schedule('Amogh K')
+    response = team_schedule(team_owner)
     
     message.reply(response)
 
@@ -161,7 +108,6 @@ def get_records(message):
     response = team_records()
     message.reply(response)
 
-# initial_setup()
 
 # # load the content from the pickle
 # f = open('datastore.pckl', 'rb')
@@ -176,6 +122,11 @@ def get_records(message):
 
 # # print(scoreboard[1].__dict__)
 # format_scoreboard()
+
+# store the league locally for easy testing later
+# f = open('datastore.pckl', 'wb')
+# pickle.dump(league, f)
+# f.close()
 
 
 

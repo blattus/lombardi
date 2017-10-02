@@ -32,6 +32,7 @@ def help(message):
 	response += '* `ESPN headlines`\n'
 	response += '* `team headlines [team abbreviation]`\n'
 	response += 'scoreboard (provides the current week\'s fantasy scoreboard'
+	response += 'schedule [owner name] - provides the specified owner\'s fantasy schedule'
 	response += 'I\'m always learning new things! If there\'s something you\'d like to see either '
 	response += 'ask my creator or check out my documentation on GitHub (https://github.com/blattus/lombardi) and add it yourself!\n'
 	response += ''
