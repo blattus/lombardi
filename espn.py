@@ -77,9 +77,14 @@ def format_scoreboard():
 def margin_of_victory():
     response = 'Average margins of victory:\n'
     mov = {}
-    
+
     for team in teams:
-        mov[team.team_name] = float(format(mean(team.mov), '.2f'))
+        # strip out any weeks which have a MOV of 0 so the average calc works properly
+        team_mov = team.mov
+        team_mov[:] = [item for item in team_mov if item != 0]
+
+        # create a dict with teamname:mov
+        mov[team.team_name] = float(format(mean(team_mov), '.2f'))
 
     sorted_keys = sorted(mov, reverse=True, key=mov.get)
     sorted_values = sorted(mov.values(), reverse=True)
