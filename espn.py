@@ -76,9 +76,17 @@ def format_scoreboard():
 
 def margin_of_victory():
     response = 'Average margins of victory:\n'
+    mov = {}
+    
     for team in teams:
-        response += '{}: {}\n'.format(team.team_name,format(mean(team.mov), '.2f'))
+        mov[team.team_name] = float(format(mean(team.mov), '.2f'))
 
+    sorted_keys = sorted(mov, reverse=True, key=mov.get)
+    sorted_values = sorted(mov.values(), reverse=True)
+
+    for i,j in enumerate(sorted_keys):
+        response += '{}: {}\n'.format(sorted_keys[i],sorted_values[i])
+    
     return response
 
 @respond_to('fantasy schedule (.*)', re.IGNORECASE)
