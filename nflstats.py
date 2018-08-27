@@ -10,7 +10,7 @@ token = query.set_token(config.stattleship_token)
 
 def weekly_schedule():
 	response = ''
-	week = 4
+	week = 1
 
 	# TODO: dynamically calculate the week
 	output = query.ss_get_results(sport='football', league='nfl', ep='games', week=week)

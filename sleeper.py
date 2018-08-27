@@ -98,15 +98,18 @@ def waiver_positions():
 	r = requests.get('https://api.sleeper.app/v1/league/{}/rosters'.format(league_id))
 	results = r.json()
 
-	# make a dummy waivers list then update each element with the position in that spot
+	# make a dummy waivers list then update each element with the correct team in that spot
 	# hardcoded to 12 spots for my league
 	waiver_order = [1,2,3,4,5,6,7,8,9,10,11,12]
+	waiver_budget_used = {}
 	for sleeper_team in results:
 		owner_id = sleeper_team['owner_id']
 		team_name = sleeper_owner_map[owner_id]['sleeper_team_name']
-		waiver_order[sleeper_team['settings']['waiver_position'] - 1] = team_name
+		waiver_order[sleeper_team['settings']['waiver_position'] - 1] = team_name  # add team to the list
+
+		waiver_budget_used[team_name] = sleeper_team['settings']['waiver_budget_used']
 	
-	return(waiver_order)
+	return(waiver_order,waiver_budget_used)
 
 # @respond_to('League Rosters', re.IGNORECASE)
 def get_team_stats(message, team):
@@ -146,13 +149,15 @@ def get_who_owns(message,first_name,last_name):
 
 
 @respond_to('Waiver Positions',re.IGNORECASE)
+@respond_to('Waiver Report',re.IGNORECASE)
+@respond_to('Waivers',re.IGNORECASE)
 def get_waiver_positions(message):
-	waiver_list = waiver_positions()
+	waiver_list,waiver_budget_used = waiver_positions()
 	emoji_list = [':one:',':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:',':keycap_ten:',':clock11:',':poop:']
 
 	response = ''
 	for i in range(12):
-		response += '{} {}\n'.format(emoji_list[i],waiver_list[i])
+		response += '{} {} (${} spent)\n'.format(emoji_list[i],waiver_list[i],waiver_budget_used[waiver_list[i]])
 
 	attachments = [
 		{
