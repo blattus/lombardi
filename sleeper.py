@@ -176,5 +176,9 @@ def get_waiver_positions(message):
 	
 	message.send_webapi('',json.dumps(attachments))
 
+@respond_to('my roster')
+def get_my_roster(message):
+	slack_username = message.channel._client.users[message.body['user']][u'name']
+
 
 
