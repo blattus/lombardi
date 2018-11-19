@@ -1,4 +1,4 @@
-requests==2.10.0
+requests>=2.20.0
 slackbot==0.4.1
 feedparser==5.2.1
 git+git://github.com/rbarton65/espnff.git#egg=espnff
